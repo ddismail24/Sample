@@ -1,0 +1,1376 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IBM SkillsBuild at Politeknik Balik Pulau</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0a1628;
+      --cobalt:  #1a56db;
+      --sky:     #3b82f6;
+      --crimson: #c0202e;
+      --rose:    #f43f5e;
+      --amber:   #f59e0b;
+      --emerald: #10b981;
+      --violet:  #7c3aed;
+      --teal:    #0891b2;
+      --slate:   #1e293b;
+      --silver:  #f1f5f9;
+      --white:   #ffffff;
+      --muted:   #64748b;
+      --border:  #e2e8f0;
+    }
+
+    body {
+      font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+      background: var(--silver);
+      color: var(--slate);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ══ HEADER ══ */
+    header {
+      background: var(--navy);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -80px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: rgba(26,86,219,0.18);
+      pointer-events: none;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: 28%;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(192,32,46,0.12);
+      pointer-events: none;
+    }
+    .header-inner { position: relative; z-index: 1; padding: 20px 36px 0; }
+    .header-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .ibm-wordmark { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
+    .ibm-wordmark em { font-style: normal; color: var(--sky); }
+    .sep { width: 1px; height: 28px; background: rgba(255,255,255,0.25); }
+    .pbu-pill {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(192,32,46,0.22);
+      border: 1px solid rgba(244,63,94,0.4);
+      border-radius: 20px; padding: 4px 14px 4px 8px;
+    }
+    .pbu-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rose); }
+    .pbu-pill span { font-size: 12px; font-weight: 700; color: #fff; letter-spacing: 0.4px; }
+    .header-right { text-align: right; }
+    .header-right .htag {
+      font-size: 11px; background: rgba(59,130,246,0.2);
+      border: 1px solid rgba(59,130,246,0.35); color: #93c5fd;
+      padding: 2px 10px; border-radius: 20px; letter-spacing: 0.5px;
+      display: inline-block; margin-bottom: 4px;
+    }
+    .header-right p { font-size: 12px; color: rgba(255,255,255,0.55); }
+    .header-hero { padding: 22px 0 28px; }
+    .header-hero h1 { font-size: 26px; font-weight: 800; line-height: 1.25; margin-bottom: 6px; }
+    .header-hero h1 span { color: var(--sky); }
+    .header-hero p { font-size: 13px; color: rgba(255,255,255,0.6); }
+    .header-stripe {
+      height: 4px;
+      background: linear-gradient(90deg, var(--cobalt) 0%, var(--sky) 40%, var(--crimson) 70%, var(--rose) 100%);
+    }
+
+    /* ══ FILTER BAR ══ */
+    .filter-bar {
+      background: var(--white); border-bottom: 1px solid var(--border);
+      padding: 12px 36px; display: flex; align-items: center; gap: 8px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .filter-label { font-size: 12px; color: var(--muted); font-weight: 600; margin-right: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .year-btn {
+      border: 1.5px solid var(--border); background: var(--silver); color: var(--muted);
+      padding: 5px 20px; border-radius: 20px; font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: all 0.18s; letter-spacing: 0.3px;
+    }
+    .year-btn:hover { border-color: var(--cobalt); color: var(--cobalt); background: #eff6ff; }
+    .year-btn.active-all  { background: var(--navy);    color: #fff; border-color: var(--navy); }
+    .year-btn.active-2024 { background: var(--cobalt);  color: #fff; border-color: var(--cobalt); }
+    .year-btn.active-2025 { background: var(--crimson); color: #fff; border-color: var(--crimson); }
+    .year-btn.active-2026 { background: var(--violet);  color: #fff; border-color: var(--violet); }
+
+    /* ══ MAIN ══ */
+    main { padding: 28px 36px; max-width: 1440px; margin: 0 auto; }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* prediction section title */
+    .section-title.pred { color: var(--violet); }
+    .section-title.pred::after { background: #ddd6fe; }
+
+    /* ── KPI CARDS ── */
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 14px; margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--white); border-radius: 12px; padding: 18px 20px;
+      border: 1px solid var(--border); position: relative; overflow: hidden;
+    }
+    .kpi-card::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 3px;
+    }
+    .kpi-card.c-cobalt::after  { background: var(--cobalt); }
+    .kpi-card.c-crimson::after { background: var(--crimson); }
+    .kpi-card.c-sky::after     { background: var(--sky); }
+    .kpi-card.c-amber::after   { background: var(--amber); }
+    .kpi-card.c-emerald::after { background: var(--emerald); }
+    .kpi-card.c-teal::after    { background: var(--teal); }
+    .kpi-card.c-violet::after  { background: var(--violet); }
+    .kpi-icon { font-size: 22px; margin-bottom: 10px; display: block; line-height: 1; }
+    .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; margin-bottom: 4px; }
+    .kpi-value { font-size: 32px; font-weight: 800; line-height: 1.1; margin-bottom: 2px; }
+    .kpi-card.c-cobalt  .kpi-value { color: var(--cobalt); }
+    .kpi-card.c-crimson .kpi-value { color: var(--crimson); }
+    .kpi-card.c-sky     .kpi-value { color: #0369a1; }
+    .kpi-card.c-amber   .kpi-value { color: #b45309; }
+    .kpi-card.c-emerald .kpi-value { color: #047857; }
+    .kpi-card.c-teal    .kpi-value { color: #0e7490; }
+    .kpi-card.c-violet  .kpi-value { color: var(--violet); }
+    .kpi-sub { font-size: 11px; color: var(--muted); }
+    .kpi-trend { font-size: 11px; margin-top: 6px; font-weight: 700; }
+    .kpi-trend.up   { color: var(--emerald); }
+    .kpi-trend.down { color: var(--crimson); }
+    .kpi-trend.new  { color: var(--violet); }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--white); border-radius: 12px; padding: 20px 22px;
+      border: 1px solid var(--border);
+    }
+    .card.pred-card { border-color: #ddd6fe; background: #faf8ff; }
+    .card h3 { font-size: 14px; font-weight: 700; color: var(--slate); margin-bottom: 2px; }
+    .card .desc { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+
+    /* ── GRID LAYOUTS ── */
+    .grid-2   { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+    .grid-3   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+    .grid-3-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 24px; }
+    .grid-1-3 { display: grid; grid-template-columns: 1fr 2fr; gap: 14px; margin-bottom: 24px; }
+    .mb24 { margin-bottom: 24px; }
+
+    /* ── CHART WRAPS ── */
+    .chart-h180 { position: relative; height: 180px; }
+    .chart-h200 { position: relative; height: 200px; }
+    .chart-h220 { position: relative; height: 220px; }
+    .chart-h240 { position: relative; height: 240px; }
+    .chart-h260 { position: relative; height: 260px; }
+
+    /* ── PLATFORM BREAKDOWN ── */
+    .platform-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+    .py-block { border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
+    .py-header { padding: 9px 14px; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: 0.4px; }
+    .py-2024 .py-header { background: var(--cobalt); }
+    .py-2025 .py-header { background: var(--crimson); }
+    .py-2026 .py-header { background: var(--violet); }
+    .py-body { padding: 10px 14px; }
+    .py-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 12px; }
+    .py-row + .py-row { border-top: 1px solid var(--border); }
+    .py-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .d-college { background: var(--cobalt); }
+    .d-adult   { background: var(--rose); }
+    .py-num { font-weight: 800; color: var(--slate); }
+    .py-total { margin-top: 8px; padding-top: 6px; border-top: 2px solid var(--border); font-size: 12px; font-weight: 800; color: var(--muted); display: flex; justify-content: space-between; }
+
+    /* ── PARTNERS ── */
+    .partner-section { margin-bottom: 14px; }
+    .partner-year-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 800; padding: 3px 12px;
+      border-radius: 20px; margin-bottom: 8px; color: #fff; letter-spacing: 0.4px;
+    }
+    .pb-2024 { background: var(--cobalt); }
+    .pb-2025 { background: var(--crimson); }
+    .pb-2026 { background: var(--violet); }
+    .partner-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag-item {
+      background: var(--silver); border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 10px; font-size: 11.5px; color: var(--slate); transition: all 0.15s;
+    }
+    .tag-item:hover { background: #eff6ff; border-color: var(--cobalt); color: var(--cobalt); }
+
+    /* ── TOP COURSES TABLE ── */
+    .course-table { width: 100%; border-collapse: collapse; }
+    .course-table th {
+      text-align: left; font-size: 11px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 0 8px 10px; border-bottom: 2px solid var(--border);
+    }
+    .course-table td { padding: 9px 8px; font-size: 12.5px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .course-table tr:last-child td { border-bottom: none; }
+    .course-rank { font-weight: 800; color: var(--cobalt); width: 24px; }
+    .course-bar-wrap { width: 100px; background: var(--silver); border-radius: 20px; height: 7px; display: inline-block; overflow: hidden; }
+    .course-bar { height: 100%; border-radius: 20px; background: var(--cobalt); }
+    .badge-cat {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      padding: 2px 8px; border-radius: 20px; color: #fff;
+    }
+    .cat-ai       { background: var(--cobalt); }
+    .cat-cyber    { background: var(--crimson); }
+    .cat-data     { background: var(--amber); color: #78350f; }
+    .cat-cloud    { background: var(--teal); }
+    .cat-soft     { background: var(--emerald); }
+    .cat-design   { background: var(--violet); }
+
+    /* ── FACILITATORS ── */
+    .facilitator-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 10px; }
+    .facilitator-card {
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px; text-align: center;
+    }
+    .fac-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 800; color: #fff; margin: 0 auto 8px;
+    }
+    .fac-name { font-size: 12px; font-weight: 700; color: var(--slate); margin-bottom: 2px; }
+    .fac-role { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .fac-sessions {
+      font-size: 11px; font-weight: 700;
+      background: var(--silver); border-radius: 20px; padding: 2px 10px;
+      display: inline-block; color: var(--cobalt);
+    }
+
+    /* ── HIGHLIGHTS / ACHIEVEMENTS ── */
+    .highlight-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 12px; }
+    .highlight-card {
+      border-radius: 10px; padding: 16px 18px;
+      border: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .hl-icon { font-size: 26px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+    .hl-title { font-size: 13px; font-weight: 700; color: var(--slate); margin-bottom: 2px; }
+    .hl-desc  { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+    .hl-year  { font-size: 10px; font-weight: 700; color: var(--cobalt); margin-top: 4px; display: inline-block; }
+    .hl-blue   { background: #eff6ff; border-color: #bfdbfe; }
+    .hl-red    { background: #fff1f2; border-color: #fecdd3; }
+    .hl-amber  { background: #fffbeb; border-color: #fde68a; }
+    .hl-green  { background: #f0fdf4; border-color: #bbf7d0; }
+    .hl-violet { background: #f5f3ff; border-color: #ddd6fe; }
+
+    /* ── DEMOGRAPHIC BARS ── */
+    .demo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .demo-label { font-size: 12px; color: var(--slate); width: 130px; flex-shrink: 0; font-weight: 500; }
+    .demo-bar-wrap { flex: 1; background: var(--silver); border-radius: 20px; height: 10px; overflow: hidden; }
+    .demo-bar { height: 100%; border-radius: 20px; }
+    .demo-val { font-size: 12px; font-weight: 700; color: var(--slate); width: 38px; text-align: right; flex-shrink: 0; }
+
+    /* ── MINI STAT ── */
+    .mini-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .mini-stat {
+      background: var(--silver); border-radius: 8px; padding: 12px 14px;
+      border: 1px solid var(--border); text-align: center;
+    }
+    .mini-stat .msv { font-size: 24px; font-weight: 800; color: var(--cobalt); }
+    .mini-stat .msl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* ── PREDICTION SPECIFIC ── */
+    .pred-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #f5f3ff; border: 1px solid #ddd6fe;
+      border-radius: 20px; padding: 3px 10px;
+      font-size: 10.5px; font-weight: 700; color: var(--violet);
+      margin-bottom: 6px;
+    }
+    .pred-kpi-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 14px; margin-bottom: 24px;
+    }
+    .pred-kpi {
+      background: #faf8ff; border: 1px solid #ddd6fe;
+      border-radius: 12px; padding: 16px 18px; position: relative; overflow: hidden;
+    }
+    .pred-kpi::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 3px; background: var(--violet);
+    }
+    .pred-kpi .kpi-label { color: var(--violet); }
+    .pred-kpi .kpi-value { color: var(--violet); font-size: 28px; }
+    .pred-kpi .kpi-sub   { color: var(--muted); }
+    .pred-kpi .kpi-trend { color: #7c3aed; }
+
+    .pace-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .pace-label { font-size: 12px; color: var(--slate); width: 120px; flex-shrink: 0; }
+    .pace-bar-wrap { flex: 1; background: var(--silver); border-radius: 20px; height: 12px; overflow: hidden; position: relative; }
+    .pace-bar { height: 100%; border-radius: 20px; transition: width 0.5s; }
+    .pace-target-line { position: absolute; top: 0; height: 100%; width: 2px; background: var(--crimson); }
+    .pace-val { font-size: 12px; font-weight: 700; width: 50px; text-align: right; flex-shrink: 0; }
+    .pace-status { font-size: 11px; font-weight: 700; width: 70px; flex-shrink: 0; }
+    .pace-on    { color: var(--emerald); }
+    .pace-warn  { color: var(--amber); }
+    .pace-risk  { color: var(--crimson); }
+
+    .insight-box {
+      border-left: 3px solid var(--violet);
+      background: #f5f3ff; border-radius: 0 8px 8px 0;
+      padding: 10px 14px; margin-bottom: 10px; font-size: 12px; color: var(--slate);
+    }
+    .insight-box strong { color: var(--violet); }
+
+    .goal-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+    .goal-row:last-child { border-bottom: none; }
+    .goal-label { font-weight: 600; color: var(--slate); }
+    .goal-val   { font-weight: 800; }
+    .goal-on    { color: var(--emerald); }
+    .goal-risk  { color: var(--crimson); }
+    .goal-warn  { color: var(--amber); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 20px; font-size: 12px;
+      color: var(--muted); border-top: 1px solid var(--border); background: var(--white);
+    }
+    footer strong { color: var(--cobalt); }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 1100px) {
+      .kpi-grid { grid-template-columns: repeat(3,1fr); }
+      .grid-3   { grid-template-columns: 1fr 1fr; }
+      .pred-kpi-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 860px) {
+      .grid-2, .grid-3, .grid-3-1, .grid-1-3 { grid-template-columns: 1fr; }
+      .platform-grid { grid-template-columns: 1fr; }
+      main { padding: 16px; }
+      .header-inner { padding: 16px 16px 0; }
+      .filter-bar { padding: 10px 16px; }
+      .kpi-grid { grid-template-columns: repeat(2,1fr); }
+      .pred-kpi-grid { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="header-left">
+        <div class="ibm-wordmark">IBM <em>SkillsBuild</em></div>
+        <div class="sep"></div>
+        <div class="pbu-pill">
+          <div class="pbu-dot"></div>
+          <span>Politeknik Balik Pulau</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="htag">OPERATIONS DASHBOARD</div>
+        <p>Unit IBM SkillsBuild @ PBU &nbsp;·&nbsp; 2024 – 2026 + Forecast</p>
+      </div>
+    </div>
+    <div class="header-hero">
+      <h1>Program Performance <span>Overview</span></h1>
+      <p>Enrollment · Credentials · Partners · Courses · Demographics · Facilitators · Highlights · Predictions</p>
+    </div>
+  </div>
+  <div class="header-stripe"></div>
+</header>
+
+<!-- ═══ FILTER BAR ═══ -->
+<div class="filter-bar">
+  <span class="filter-label">View by Year</span>
+  <button class="year-btn active-all" onclick="setYear('all')">All Years</button>
+  <button class="year-btn" onclick="setYear('2024')">2024</button>
+  <button class="year-btn" onclick="setYear('2025')">2025</button>
+  <button class="year-btn" onclick="setYear('2026')">2026 ★</button>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<main>
+
+  <!-- ── SECTION 1: KEY METRICS ── -->
+  <div class="section-title">Key Metrics</div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(5,1fr);">
+    <div class="kpi-card c-cobalt">
+      <span class="kpi-icon">🎓</span>
+      <div class="kpi-label">Total Enrollments</div>
+      <div class="kpi-value" id="kpi-enrollment">4,510+</div>
+      <div class="kpi-sub" id="kpi-enrollment-sub">All years combined</div>
+      <div class="kpi-trend up" id="kpi-enrollment-trend">↑ +56% vs 2024</div>
+    </div>
+    <div class="kpi-card c-sky">
+      <span class="kpi-icon">🏫</span>
+      <div class="kpi-label">College Platform</div>
+      <div class="kpi-value" id="kpi-college">1,240+</div>
+      <div class="kpi-sub" id="kpi-college-sub">Student learners</div>
+      <div class="kpi-trend up" id="kpi-college-trend">↑ +47% vs 2024</div>
+    </div>
+    <div class="kpi-card c-crimson">
+      <span class="kpi-icon">👔</span>
+      <div class="kpi-label">Adult Platform</div>
+      <div class="kpi-value" id="kpi-adult">3,270+</div>
+      <div class="kpi-sub" id="kpi-adult-sub">Working adult learners</div>
+      <div class="kpi-trend up" id="kpi-adult-trend">↑ +59% vs 2024</div>
+    </div>
+    <div class="kpi-card c-amber">
+      <span class="kpi-icon">🏅</span>
+      <div class="kpi-label">Credentials Issued</div>
+      <div class="kpi-value" id="kpi-badges">1,568+</div>
+      <div class="kpi-sub" id="kpi-badges-sub">Digital badges earned</div>
+      <div class="kpi-trend up" id="kpi-badges-trend">↑ +50% vs 2024</div>
+    </div>
+    <div class="kpi-card c-emerald">
+      <span class="kpi-icon">🤝</span>
+      <div class="kpi-label">Partner Institutions</div>
+      <div class="kpi-value" id="kpi-partners">16</div>
+      <div class="kpi-sub" id="kpi-partners-sub">Organisations onboarded</div>
+      <div class="kpi-trend up" id="kpi-partners-trend">↑ 6 → 7 → 3 per year</div>
+    </div>
+  </div>
+
+  <!-- extra mini KPIs -->
+  <div class="grid-3" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px;">
+    <div class="kpi-card c-teal">
+      <span class="kpi-icon">📋</span>
+      <div class="kpi-label">Workshops Conducted</div>
+      <div class="kpi-value" id="kpi-workshops">47</div>
+      <div class="kpi-sub" id="kpi-workshops-sub">Training sessions (all years)</div>
+      <div class="kpi-trend new" id="kpi-workshops-trend">★ Dummy data</div>
+    </div>
+    <div class="kpi-card c-violet">
+      <span class="kpi-icon">👩‍🏫</span>
+      <div class="kpi-label">Facilitators</div>
+      <div class="kpi-value" id="kpi-fac">8</div>
+      <div class="kpi-sub" id="kpi-fac-sub">Active trainers &amp; coaches</div>
+      <div class="kpi-trend new" id="kpi-fac-trend">★ Dummy data</div>
+    </div>
+    <div class="kpi-card c-sky">
+      <span class="kpi-icon">📚</span>
+      <div class="kpi-label">Courses Available</div>
+      <div class="kpi-value" id="kpi-courses">120+</div>
+      <div class="kpi-sub" id="kpi-courses-sub">On IBM SkillsBuild platform</div>
+      <div class="kpi-trend new" id="kpi-courses-trend">★ Dummy data</div>
+    </div>
+    <div class="kpi-card c-amber">
+      <span class="kpi-icon">⭐</span>
+      <div class="kpi-label">Completion Rate</div>
+      <div class="kpi-value" id="kpi-rate">68%</div>
+      <div class="kpi-sub" id="kpi-rate-sub">Avg. course completion</div>
+      <div class="kpi-trend up" id="kpi-rate-trend">↑ +5% vs 2024</div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 2: ENROLLMENT ANALYTICS ── -->
+  <div class="section-title">Enrollment Analytics</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Enrollment by Platform &amp; Year</h3>
+      <div class="desc">College vs Adult learner counts per year</div>
+      <div class="chart-h220"><canvas id="enrollmentChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Monthly Enrollment Trend</h3>
+      <div class="desc">Learner registrations by month <span style="color:var(--violet);font-weight:700;">★ Dummy data</span></div>
+      <div class="chart-h220"><canvas id="monthlyChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card mb24">
+    <h3>Enrollment Growth Trend (2024 – 2026)</h3>
+    <div class="desc">Combined College + Adult total learner growth across all years</div>
+    <div class="chart-h200"><canvas id="trendChart"></canvas></div>
+  </div>
+
+  <div class="card mb24">
+    <h3>Platform Breakdown by Year</h3>
+    <div class="desc" style="margin-bottom:14px;">Detailed College vs Adult enrollment per year</div>
+    <div class="platform-grid">
+      <div class="py-block py-2024" id="block-2024">
+        <div class="py-header">📅 2024</div>
+        <div class="py-body">
+          <div class="py-row"><span><span class="py-dot d-college"></span>College Platform</span><span class="py-num">300+</span></div>
+          <div class="py-row"><span><span class="py-dot d-adult"></span>Adult Platform</span><span class="py-num">1,070</span></div>
+          <div class="py-total"><span>Total</span><span>~1,370+</span></div>
+        </div>
+      </div>
+      <div class="py-block py-2025" id="block-2025">
+        <div class="py-header">📅 2025</div>
+        <div class="py-body">
+          <div class="py-row"><span><span class="py-dot d-college"></span>College Platform</span><span class="py-num">440+</span></div>
+          <div class="py-row"><span><span class="py-dot d-adult"></span>Adult Platform</span><span class="py-num">1,700+</span></div>
+          <div class="py-total"><span>Total</span><span>~2,140+</span></div>
+        </div>
+      </div>
+      <div class="py-block py-2026" id="block-2026">
+        <div class="py-header">📅 2026 ★ In Progress</div>
+        <div class="py-body">
+          <div class="py-row"><span><span class="py-dot d-college"></span>College Platform</span><span class="py-num">500+</span></div>
+          <div class="py-row"><span><span class="py-dot d-adult"></span>Adult Platform</span><span class="py-num">500+</span></div>
+          <div class="py-total"><span>Total</span><span>~1,000+</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3: CREDENTIALS & COURSES ── -->
+  <div class="section-title">Credentials &amp; Courses</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Credentials / Badges Issued by Year</h3>
+      <div class="desc">Adult + College digital credentials per year</div>
+      <div class="chart-h220"><canvas id="badgesChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Badge Categories Distribution</h3>
+      <div class="desc">Breakdown by course category <span style="color:var(--violet);font-weight:700;">★ Dummy data</span></div>
+      <div class="chart-h220"><canvas id="categoryChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card mb24">
+    <h3>Top 8 Most Completed Courses</h3>
+    <div class="desc">Ranked by total completions across all years &nbsp;<span style="color:var(--violet);font-weight:700;">★ Dummy data</span></div>
+    <table class="course-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Course Name</th>
+          <th>Category</th>
+          <th>Completions</th>
+          <th>Progress</th>
+        </tr>
+      </thead>
+      <tbody id="courseTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- ── SECTION 4: DEMOGRAPHICS ── -->
+  <div class="section-title">Learner Demographics <span style="font-size:11px;color:var(--violet);font-weight:700;text-transform:none;letter-spacing:0;">★ Dummy data</span></div>
+  <div class="grid-3">
+    <div class="card">
+      <h3>Gender Breakdown</h3>
+      <div class="desc">Male vs Female learner ratio</div>
+      <div class="chart-h220"><canvas id="genderChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Faculty / Department Participation</h3>
+      <div class="desc">Top departments by enrollment</div>
+      <div class="chart-h220"><canvas id="deptChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Age Group (Adult Platform)</h3>
+      <div class="desc">Adult learner age distribution</div>
+      <div style="margin-top:8px;">
+        <div class="demo-row"><span class="demo-label">18 – 25 years</span><div class="demo-bar-wrap"><div class="demo-bar" style="width:32%;background:var(--cobalt);"></div></div><span class="demo-val">32%</span></div>
+        <div class="demo-row"><span class="demo-label">26 – 35 years</span><div class="demo-bar-wrap"><div class="demo-bar" style="width:41%;background:var(--sky);"></div></div><span class="demo-val">41%</span></div>
+        <div class="demo-row"><span class="demo-label">36 – 45 years</span><div class="demo-bar-wrap"><div class="demo-bar" style="width:18%;background:var(--violet);"></div></div><span class="demo-val">18%</span></div>
+        <div class="demo-row"><span class="demo-label">46 – 55 years</span><div class="demo-bar-wrap"><div class="demo-bar" style="width:7%;background:var(--amber);"></div></div><span class="demo-val">7%</span></div>
+        <div class="demo-row"><span class="demo-label">56+ years</span><div class="demo-bar-wrap"><div class="demo-bar" style="width:2%;background:var(--muted);"></div></div><span class="demo-val">2%</span></div>
+        <div style="margin-top:12px;">
+          <div class="mini-stat-grid">
+            <div class="mini-stat"><div class="msv">26</div><div class="msl">Avg. age (Adult)</div></div>
+            <div class="mini-stat"><div class="msv">3.2</div><div class="msl">Avg. badges/learner</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 5: PARTNER INSTITUTIONS ── -->
+  <div class="section-title">Partner Institutions &amp; Organisations</div>
+  <div class="grid-3-1">
+    <div class="card">
+      <h3>Partner Institutions by Year</h3>
+      <div class="desc">16 institutions &amp; organisations have joined the IBM SkillsBuild @ PBU program</div>
+      <div class="partner-section" id="partners-2024">
+        <div class="partner-year-badge pb-2024">2024 &nbsp;·&nbsp; 6 Partners</div>
+        <div class="partner-tags">
+          <span class="tag-item">PPD Barat Daya</span>
+          <span class="tag-item">Politeknik Kuching</span>
+          <span class="tag-item">Politeknik Muadzam Shah</span>
+          <span class="tag-item">Politeknik Seberang Perai</span>
+          <span class="tag-item">Majlis Belia Pulau Pinang</span>
+          <span class="tag-item">Majlis Bandaraya Pulau Pinang</span>
+        </div>
+      </div>
+      <div class="partner-section" id="partners-2025" style="margin-top:12px;">
+        <div class="partner-year-badge pb-2025">2025 &nbsp;·&nbsp; 7 Partners</div>
+        <div class="partner-tags">
+          <span class="tag-item">KITAB Pulau Pinang</span>
+          <span class="tag-item">KV Batu Lanchang</span>
+          <span class="tag-item">KV Alor Setar</span>
+          <span class="tag-item">Politeknik Sultan Mizan Zainal Abidin</span>
+          <span class="tag-item">Politeknik Muadzam Shah</span>
+          <span class="tag-item">Politeknik Ungku Omar</span>
+          <span class="tag-item">Jabatan Pendidikan Negeri Terengganu</span>
+        </div>
+      </div>
+      <div class="partner-section" id="partners-2026" style="margin-top:12px;">
+        <div class="partner-year-badge pb-2026">2026 &nbsp;·&nbsp; 3 Partners</div>
+        <div class="partner-tags">
+          <span class="tag-item">Politeknik Melaka</span>
+          <span class="tag-item">KV Shah Alam</span>
+          <span class="tag-item">KK Selayang</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Partner Type Breakdown</h3>
+      <div class="desc">By institution category <span style="color:var(--violet);font-weight:700;">★ Dummy data</span></div>
+      <div class="chart-h220"><canvas id="partnerTypeChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 6: FACILITATORS ── -->
+  <div class="section-title">Facilitators &amp; Trainers <span style="font-size:11px;color:var(--violet);font-weight:700;text-transform:none;letter-spacing:0;margin-left:4px;">★ Dummy data</span></div>
+  <div class="card mb24">
+    <h3>Active Facilitators</h3>
+    <div class="desc" style="margin-bottom:16px;">Unit trainers, coaches and program administrators</div>
+    <div class="facilitator-grid" id="facilitatorGrid"></div>
+  </div>
+
+  <!-- ── SECTION 7: PROGRAMME HIGHLIGHTS ── -->
+  <div class="section-title">Programme Highlights &amp; Achievements</div>
+  <div class="highlight-grid mb24">
+    <div class="highlight-card hl-blue">
+      <div class="hl-icon">🏆</div>
+      <div>
+        <div class="hl-title">Top Service Center</div>
+        <div class="hl-desc">Recognised as one of the top IBM SkillsBuild Service Centers in Malaysia</div>
+        <span class="hl-year">2025</span>
+      </div>
+    </div>
+    <div class="highlight-card hl-red">
+      <div class="hl-icon">🚀</div>
+      <div>
+        <div class="hl-title">1,000 Learners Milestone</div>
+        <div class="hl-desc">Reached 1,000 total enrolled learners within the first year of operation</div>
+        <span class="hl-year">2024</span>
+      </div>
+    </div>
+    <div class="highlight-card hl-amber">
+      <div class="hl-icon">🌏</div>
+      <div>
+        <div class="hl-title">National Reach</div>
+        <div class="hl-desc">Partners across Peninsular Malaysia — from Penang to Terengganu to KL</div>
+        <span class="hl-year">2025</span>
+      </div>
+    </div>
+    <div class="highlight-card hl-green">
+      <div class="hl-icon">🎓</div>
+      <div>
+        <div class="hl-title">2,140+ Learners in 2025</div>
+        <div class="hl-desc">Surpassed enrollment target with significant Adult platform growth</div>
+        <span class="hl-year">2025</span>
+      </div>
+    </div>
+    <div class="highlight-card hl-violet">
+      <div class="hl-icon">🤝</div>
+      <div>
+        <div class="hl-title">16 Partner Institutions</div>
+        <div class="hl-desc">Successfully onboarded 16 institutions and organisations since 2024</div>
+        <span class="hl-year">2024 – 2026</span>
+      </div>
+    </div>
+    <div class="highlight-card hl-blue">
+      <div class="hl-icon">📜</div>
+      <div>
+        <div class="hl-title">1,568+ Credentials Issued</div>
+        <div class="hl-desc">Digital badges and credentials earned by learners across all platforms</div>
+        <span class="hl-year">2024 – 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       SECTION 8: PREDICTIONS & FORECASTS
+  ════════════════════════════════════════════════ -->
+  <div class="section-title pred">Predictions &amp; Forecasts <span style="font-size:11px;font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;margin-left:6px;">Based on 2024–2026 actuals · Trend extrapolation</span></div>
+
+  <!-- Prediction KPIs -->
+  <div class="pred-kpi-grid">
+    <div class="pred-kpi">
+      <span class="kpi-icon">📊</span>
+      <div class="kpi-label">Projected 2026 Full Year</div>
+      <div class="kpi-value">~2,000</div>
+      <div class="kpi-sub">Extrapolated from Jan–Oct pace</div>
+      <div class="kpi-trend">↑ Needs acceleration</div>
+    </div>
+    <div class="pred-kpi">
+      <span class="kpi-icon">🔮</span>
+      <div class="kpi-label">Forecast 2027 Enrollment</div>
+      <div class="kpi-value">~2,600</div>
+      <div class="kpi-sub">Polynomial trend projection</div>
+      <div class="kpi-trend">↑ +30% vs 2025</div>
+    </div>
+    <div class="pred-kpi">
+      <span class="kpi-icon">🏅</span>
+      <div class="kpi-label">Projected 2027 Credentials</div>
+      <div class="kpi-value">~1,100</div>
+      <div class="kpi-sub">Based on badge-per-learner rate</div>
+      <div class="kpi-trend">↑ Rate: ~0.42/learner</div>
+    </div>
+    <div class="pred-kpi">
+      <span class="kpi-icon">🎯</span>
+      <div class="kpi-label">Completion Rate 2027</div>
+      <div class="kpi-value">~74%</div>
+      <div class="kpi-sub">+3% annual improvement trend</div>
+      <div class="kpi-trend">Target: 80% by 2029</div>
+    </div>
+  </div>
+
+  <!-- Forecast Chart + 2026 Pace Tracker -->
+  <div class="grid-2">
+    <div class="card pred-card">
+      <div class="pred-badge">AI Forecast</div>
+      <h3>Enrollment Forecast: 2024 – 2028</h3>
+      <div class="desc">Actuals (solid) + projected trend (dashed) with confidence band</div>
+      <div class="chart-h240"><canvas id="forecastChart"></canvas></div>
+    </div>
+    <div class="card pred-card">
+      <div class="pred-badge">2026 Pace Tracker</div>
+      <h3>2026 Year-to-Date Pace vs Target</h3>
+      <div class="desc">Current pace vs prior-year benchmarks — assesses risk of falling short</div>
+      <div style="margin-top:16px;">
+        <div class="pace-row">
+          <span class="pace-label">Total Enrollment</span>
+          <div class="pace-bar-wrap">
+            <div class="pace-bar" style="width:47%;background:var(--amber);"></div>
+            <div class="pace-target-line" style="left:100%;"></div>
+          </div>
+          <span class="pace-val" style="color:var(--amber);">1,000</span>
+          <span class="pace-status pace-warn">~47% of 2025</span>
+        </div>
+        <div class="pace-row">
+          <span class="pace-label">College Platform</span>
+          <div class="pace-bar-wrap">
+            <div class="pace-bar" style="width:57%;background:var(--cobalt);"></div>
+          </div>
+          <span class="pace-val" style="color:var(--cobalt);">500+</span>
+          <span class="pace-status pace-on">On Track</span>
+        </div>
+        <div class="pace-row">
+          <span class="pace-label">Adult Platform</span>
+          <div class="pace-bar-wrap">
+            <div class="pace-bar" style="width:29%;background:var(--crimson);"></div>
+          </div>
+          <span class="pace-val" style="color:var(--crimson);">500+</span>
+          <span class="pace-status pace-risk">At Risk</span>
+        </div>
+        <div class="pace-row">
+          <span class="pace-label">Credentials</span>
+          <div class="pace-bar-wrap">
+            <div class="pace-bar" style="width:33%;background:var(--emerald);"></div>
+          </div>
+          <span class="pace-val" style="color:var(--emerald);">317</span>
+          <span class="pace-status pace-warn">Partial</span>
+        </div>
+        <div class="insight-box" style="margin-top:16px;">
+          <strong>Key Insight:</strong> 2026 Adult Platform is at only 29% of 2025's total. At current pace, full-year enrollment is projected at ~2,000 — a <strong>recovery</strong> from the partial figure, but still below 2025's peak of 2,140.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Credential Forecast + Completion Rate Trajectory -->
+  <div class="grid-2">
+    <div class="card pred-card">
+      <div class="pred-badge">Credential Forecast</div>
+      <h3>Credential Issuance Trend &amp; Projection</h3>
+      <div class="desc">Badges issued per year (actuals + forecast with confidence range)</div>
+      <div class="chart-h220"><canvas id="credForecastChart"></canvas></div>
+    </div>
+    <div class="card pred-card">
+      <div class="pred-badge">Completion Rate</div>
+      <h3>Completion Rate Trajectory to 80% Goal</h3>
+      <div class="desc">Historical rate vs projected improvement path and 80% target line</div>
+      <div class="chart-h220"><canvas id="completionChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Platform Ratio Shift + Goal Tracker -->
+  <div class="grid-2">
+    <div class="card pred-card">
+      <div class="pred-badge">Demographic Shift</div>
+      <h3>Adult vs College Platform Ratio Forecast</h3>
+      <div class="desc">Projected share of each platform through 2028 — Adult dominance expected to persist</div>
+      <div class="chart-h220"><canvas id="ratioChart"></canvas></div>
+    </div>
+    <div class="card pred-card">
+      <div class="pred-badge">Goal Tracker</div>
+      <h3>2027 Strategic Goals vs Projections</h3>
+      <div class="desc">Projected outcomes against aspirational targets for the next planning cycle</div>
+      <div style="margin-top:10px;">
+        <div class="goal-row">
+          <span class="goal-label">Total Enrollment 2027</span>
+          <span style="font-size:11px;color:var(--muted);">Target: 3,000</span>
+          <span class="goal-val goal-warn">~2,600 projected</span>
+        </div>
+        <div class="goal-row">
+          <span class="goal-label">Credentials Issued 2027</span>
+          <span style="font-size:11px;color:var(--muted);">Target: 1,200</span>
+          <span class="goal-val goal-warn">~1,100 projected</span>
+        </div>
+        <div class="goal-row">
+          <span class="goal-label">Completion Rate 2027</span>
+          <span style="font-size:11px;color:var(--muted);">Target: 75%</span>
+          <span class="goal-val goal-on">~74% projected</span>
+        </div>
+        <div class="goal-row">
+          <span class="goal-label">Partner Institutions 2027</span>
+          <span style="font-size:11px;color:var(--muted);">Target: 20</span>
+          <span class="goal-val goal-risk">~18 projected</span>
+        </div>
+        <div class="goal-row">
+          <span class="goal-label">Adult:College Ratio 2027</span>
+          <span style="font-size:11px;color:var(--muted);">Target: 70:30</span>
+          <span class="goal-val goal-on">~71:29 projected</span>
+        </div>
+        <div class="goal-row">
+          <span class="goal-label">Reach 80% Completion</span>
+          <span style="font-size:11px;color:var(--muted);">Target: 2028</span>
+          <span class="goal-val goal-on">2028 – 2029</span>
+        </div>
+        <div class="insight-box" style="margin-top:14px;">
+          <strong>Recommendation:</strong> Focus Adult Platform outreach in 2026 H2 to close the gap. Current pace suggests enrollment will recover but will likely miss the 3,000 target by ~400 learners without additional interventions.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <strong>IBM SkillsBuild @ Politeknik Balik Pulau</strong> &nbsp;·&nbsp; Unit Operations Dashboard &nbsp;·&nbsp; Data as reported 2024–2026 · Forecast 2027–2028
+  <br><span style="font-size:11px;color:#94a3b8;">★ Sections marked "Dummy data" should be updated with actual figures &nbsp;·&nbsp; Predictions based on trend extrapolation from 3-year actuals</span>
+  <br><br><span style="color:#aaa;font-size:11px;">Made with IBM Bob</span>
+</footer>
+
+<noscript><p style="text-align:center;padding:40px;font-size:16px;color:#c0202e;">JavaScript is required to display this dashboard. Please enable JS in your browser.</p></noscript>
+{% raw %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+/* ═══════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════ */
+const KPI = {
+  all:   { enrollment:'4,510+', eS:'All years combined',      eTr:'↑ +56% vs 2024',
+           college:'1,240+',    cS:'Student learners',         cTr:'↑ +47% vs 2024',
+           adult:'3,270+',      aS:'Working adult learners',   aTr:'↑ +59% vs 2024',
+           badges:'1,568+',     bS:'Digital badges earned',    bTr:'↑ +50% vs 2024',
+           partners:'16',       pS:'Organisations onboarded',  pTr:'↑ 6 → 7 → 3 per year',
+           workshops:'47',      wS:'Training sessions',        wTr:'★ Dummy data',
+           fac:'8',             fS:'Active trainers',          fTr:'★ Dummy data',
+           courses:'120+',      cOS:'On platform',             cOTr:'★ Dummy data',
+           rate:'68%',          rS:'Avg. completion',          rTr:'↑ +5% vs 2024' },
+  '2024':{ enrollment:'1,370+', eS:'Total enrolled 2024',     eTr:'— Baseline year',
+           college:'300+',      cS:'College 2024',             cTr:'— Baseline year',
+           adult:'1,070',       aS:'Adult learners 2024',      aTr:'— Baseline year',
+           badges:'~500',       bS:'Est. credentials 2024',    bTr:'— Baseline year',
+           partners:'6',        pS:'Partners 2024',            pTr:'— Baseline year',
+           workshops:'12',      wS:'Sessions in 2024',         wTr:'★ Dummy data',
+           fac:'5',             fS:'Facilitators 2024',        fTr:'★ Dummy data',
+           courses:'80+',       cOS:'On platform 2024',        cOTr:'★ Dummy data',
+           rate:'63%',          rS:'Completion 2024',          rTr:'— Baseline year' },
+  '2025':{ enrollment:'2,140+', eS:'Total enrolled 2025',     eTr:'↑ +56% vs 2024',
+           college:'440+',      cS:'College 2025',             cTr:'↑ +47% vs 2024',
+           adult:'1,700+',      aS:'Adult learners 2025',      aTr:'↑ +59% vs 2024',
+           badges:'951+',       bS:'Credentials 2025',         bTr:'↑ +90% vs 2024',
+           partners:'7',        pS:'Partners 2025',            pTr:'↑ +1 vs 2024',
+           workshops:'22',      wS:'Sessions in 2025',         wTr:'★ Dummy data',
+           fac:'7',             fS:'Facilitators 2025',        fTr:'★ Dummy data',
+           courses:'100+',      cOS:'On platform 2025',        cOTr:'★ Dummy data',
+           rate:'68%',          rS:'Completion 2025',          rTr:'↑ +5% vs 2024' },
+  '2026':{ enrollment:'1,000+', eS:'In progress (2026)',      eTr:'★ Year in progress',
+           college:'500+',      cS:'College 2026',             cTr:'★ In progress',
+           adult:'500+',        aS:'Adult learners 2026',      aTr:'★ In progress',
+           badges:'317',        bS:'Credentials Jan–Oct 2026', bTr:'★ In progress',
+           partners:'3',        pS:'Partners 2026',            pTr:'★ In progress',
+           workshops:'13',      wS:'Sessions in 2026',         wTr:'★ Dummy data',
+           fac:'8',             fS:'Facilitators 2026',        fTr:'★ Dummy data',
+           courses:'120+',      cOS:'On platform 2026',        cOTr:'★ Dummy data',
+           rate:'71%',          rS:'Completion 2026',          rTr:'↑ +8% vs 2024' },
+};
+
+const YEARS = ['2024','2025','2026'];
+const collegeNums  = [300, 440, 500];
+const adultNums    = [1070, 1700, 500];
+const totalNums    = [1370, 2140, 1000];
+const badgesAdult  = [500, 751, 317];
+const badgesCollege= [150, 200, 150];
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const monthlyAll  = [180,210,320,290,380,430,260,310,400,450,310,280];
+const monthly2024 = [60, 70, 110,90, 120,130,80, 100,130,150,90, 90];
+const monthly2025 = [90, 110,160,150,200,230,130,160,200,230,150,130];
+const monthly2026 = [120,130,150,160,180,170,null,null,null,null,null,null];
+
+const TOP_COURSES = [
+  { rank:1, name:'Getting Started with Artificial Intelligence', cat:'AI',          catClass:'cat-ai',    count:342 },
+  { rank:2, name:'Introduction to Cybersecurity',                cat:'Cybersecurity',catClass:'cat-cyber', count:289 },
+  { rank:3, name:'Data Science Foundations',                     cat:'Data',         catClass:'cat-data',  count:245 },
+  { rank:4, name:'Cloud Computing Fundamentals',                 cat:'Cloud',        catClass:'cat-cloud', count:198 },
+  { rank:5, name:'Design Thinking',                              cat:'Soft Skills',  catClass:'cat-soft',  count:176 },
+  { rank:6, name:'Machine Learning with Python',                 cat:'AI',           catClass:'cat-ai',    count:154 },
+  { rank:7, name:'Digital Marketing Essentials',                 cat:'Soft Skills',  catClass:'cat-soft',  count:132 },
+  { rank:8, name:'UX Design Principles',                         cat:'Design',       catClass:'cat-design',count:118 },
+];
+const maxCourse = 342;
+
+const FACILITATORS = [
+  { name:'Ahmad Fauzi',   role:'Lead Facilitator',      sessions:18, color:'#1a56db' },
+  { name:'Siti Norzila',  role:'Adult Platform Coach',  sessions:15, color:'#c0202e' },
+  { name:'Hafizuddin',    role:'Technical Trainer',     sessions:12, color:'#7c3aed' },
+  { name:'Nurul Ain',     role:'College Coordinator',   sessions:10, color:'#10b981' },
+  { name:'Zulkifli',      role:'Program Admin',         sessions:9,  color:'#f59e0b' },
+  { name:'Farhana',       role:'IBM Liaison',           sessions:8,  color:'#0891b2' },
+  { name:'Razif',         role:'Content Developer',     sessions:6,  color:'#f43f5e' },
+  { name:'Syafiqah',      role:'Community Outreach',    sessions:5,  color:'#0a1628' },
+];
+
+/* ═══════════════════════════════════════════════
+   CHART INSTANCES
+═══════════════════════════════════════════════ */
+let cEnroll, cMonthly, cTrend, cBadge, cCategory, cGender, cDept, cPartnerType,
+    cForecast, cCredForecast, cCompletion, cRatio;
+
+const C = {
+  cobalt:'#1a56db', sky:'#3b82f6', skyA:'rgba(59,130,246,0.15)',
+  crimson:'#c0202e', rose:'#f43f5e', roseA:'rgba(244,63,94,0.15)',
+  amber:'#f59e0b', emerald:'#10b981', violet:'#7c3aed', violetA:'rgba(124,58,237,0.12)',
+  teal:'#0891b2', muted:'#94a3b8', border:'#f1f5f9',
+};
+
+function getInitials(name) {
+  return name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+}
+
+/* ── BUILD FACILITATORS ── */
+function buildFacilitators() {
+  const grid = document.getElementById('facilitatorGrid');
+  grid.innerHTML = FACILITATORS.map(f => `
+    <div class="facilitator-card">
+      <div class="fac-avatar" style="background:${f.color};">${getInitials(f.name)}</div>
+      <div class="fac-name">${f.name}</div>
+      <div class="fac-role">${f.role}</div>
+      <div class="fac-sessions">${f.sessions} sessions</div>
+    </div>`).join('');
+}
+
+/* ── BUILD COURSE TABLE ── */
+function buildCourseTable() {
+  const tbody = document.getElementById('courseTableBody');
+  tbody.innerHTML = TOP_COURSES.map(c => `
+    <tr>
+      <td class="course-rank">${c.rank}</td>
+      <td>${c.name}</td>
+      <td><span class="badge-cat ${c.catClass}">${c.cat}</span></td>
+      <td style="font-weight:700;">${c.count}</td>
+      <td><div class="course-bar-wrap"><div class="course-bar" style="width:${Math.round(c.count/maxCourse*100)}%;"></div></div></td>
+    </tr>`).join('');
+}
+
+/* ── CHART BUILDERS ── */
+function buildEnrollChart(fy, fc, fa) {
+  const ctx = document.getElementById('enrollmentChart').getContext('2d');
+  if (cEnroll) cEnroll.destroy();
+  cEnroll = new Chart(ctx, {
+    type:'bar',
+    data:{ labels:fy, datasets:[
+      { label:'College Platform', data:fc, backgroundColor:C.cobalt, borderRadius:5, borderSkipped:false },
+      { label:'Adult Platform',   data:fa, backgroundColor:C.rose,   borderRadius:5, borderSkipped:false }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, font:{size:12}, color:'#475569', padding:14 } } },
+      scales:{ x:{ grid:{display:false}, ticks:{color:'#64748b'} }, y:{ beginAtZero:true, grid:{color:C.border}, ticks:{color:'#64748b',font:{size:11}} } }
+    }
+  });
+}
+
+function buildMonthlyChart(data) {
+  const ctx = document.getElementById('monthlyChart').getContext('2d');
+  if (cMonthly) cMonthly.destroy();
+  cMonthly = new Chart(ctx, {
+    type:'line',
+    data:{ labels:MONTHS, datasets:[{
+      label:'Enrollments', data:data,
+      borderColor:C.violet, backgroundColor:'rgba(124,58,237,0.08)',
+      borderWidth:2.5, pointBackgroundColor:C.violet, pointRadius:4,
+      fill:true, tension:0.4, spanGaps:false
+    }]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false} },
+      scales:{ x:{ grid:{display:false}, ticks:{color:'#64748b',font:{size:10}} }, y:{ beginAtZero:true, grid:{color:C.border}, ticks:{color:'#64748b',font:{size:10}} } }
+    }
+  });
+}
+
+function buildTrendChart(fy, ft) {
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  if (cTrend) cTrend.destroy();
+  cTrend = new Chart(ctx, {
+    type:'line',
+    data:{ labels:fy, datasets:[{
+      label:'Total Enrollment', data:ft,
+      borderColor:C.cobalt, backgroundColor:C.skyA,
+      borderWidth:3, pointBackgroundColor:C.crimson,
+      pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:7,
+      fill:true, tension:0.4
+    }]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c=>` ${c.parsed.y.toLocaleString()} learners` } } },
+      scales:{ x:{ grid:{display:false}, ticks:{color:'#64748b'} }, y:{ beginAtZero:false, grid:{color:C.border}, ticks:{color:'#64748b',font:{size:11}} } }
+    }
+  });
+}
+
+function buildBadgesChart(fy, fba, fbc) {
+  const ctx = document.getElementById('badgesChart').getContext('2d');
+  if (cBadge) cBadge.destroy();
+  cBadge = new Chart(ctx, {
+    type:'bar',
+    data:{ labels:fy, datasets:[
+      { label:'Adult Platform',   data:fba, backgroundColor:C.amber,  borderRadius:5, borderSkipped:false },
+      { label:'College Platform', data:fbc, backgroundColor:C.violet, borderRadius:5, borderSkipped:false }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, font:{size:12}, color:'#475569', padding:14 } } },
+      scales:{ x:{ grid:{display:false}, ticks:{color:'#64748b'} }, y:{ beginAtZero:true, grid:{color:C.border}, ticks:{color:'#64748b',font:{size:11}} } }
+    }
+  });
+}
+
+function buildCategoryChart() {
+  const ctx = document.getElementById('categoryChart').getContext('2d');
+  if (cCategory) cCategory.destroy();
+  cCategory = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels:['AI & Machine Learning','Cybersecurity','Data Science','Cloud Computing','Soft Skills','Design'],
+      datasets:[{ data:[28,22,18,14,12,6],
+        backgroundColor:[C.cobalt,C.crimson,C.amber,C.teal,C.emerald,C.violet],
+        borderWidth:2, borderColor:'#fff', hoverOffset:6 }]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'60%',
+      plugins:{ legend:{ position:'right', labels:{ boxWidth:12, font:{size:11}, color:'#475569', padding:10 } } }
+    }
+  });
+}
+
+function buildGenderChart() {
+  const ctx = document.getElementById('genderChart').getContext('2d');
+  if (cGender) cGender.destroy();
+  cGender = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels:['Female','Male'],
+      datasets:[{ data:[58,42],
+        backgroundColor:[C.rose,C.cobalt],
+        borderWidth:2, borderColor:'#fff', hoverOffset:6 }]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'65%',
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, font:{size:12}, color:'#475569', padding:12 } } }
+    }
+  });
+}
+
+function buildDeptChart() {
+  const ctx = document.getElementById('deptChart').getContext('2d');
+  if (cDept) cDept.destroy();
+  cDept = new Chart(ctx, {
+    type:'bar',
+    data:{ labels:['JKE','JKM','JKA','JKB','JPH','JMSK','JPHT'],
+      datasets:[{ label:'Enrollments',
+        data:[420,380,310,270,230,195,160],
+        backgroundColor:[C.cobalt,C.sky,'#60a5fa','#93c5fd','#bfdbfe','#dbeafe','#eff6ff'],
+        borderRadius:4, borderSkipped:false }]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{ legend:{display:false} },
+      scales:{ x:{ grid:{color:C.border}, ticks:{color:'#64748b',font:{size:10}} }, y:{ grid:{display:false}, ticks:{color:'#64748b',font:{size:11}} } }
+    }
+  });
+}
+
+function buildPartnerTypeChart() {
+  const ctx = document.getElementById('partnerTypeChart').getContext('2d');
+  if (cPartnerType) cPartnerType.destroy();
+  cPartnerType = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels:['Polytechnic','Voc. College (KV)','Government Agency','Community Org.'],
+      datasets:[{ data:[7,4,3,2],
+        backgroundColor:[C.cobalt,C.violet,C.teal,C.emerald],
+        borderWidth:2, borderColor:'#fff', hoverOffset:6 }]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'55%',
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, font:{size:11}, color:'#475569', padding:8 } } }
+    }
+  });
+}
+
+/* ── PREDICTION CHARTS ── */
+
+/* 1. Enrollment Forecast 2024–2028 */
+function buildForecastChart() {
+  const ctx = document.getElementById('forecastChart').getContext('2d');
+  if (cForecast) cForecast.destroy();
+  /* Actuals: 2024=1370, 2025=2140, 2026=2000(est full-year), 2027=2600(proj), 2028=3100(proj) */
+  const labels = ['2024','2025','2026 (est)','2027 (proj)','2028 (proj)'];
+  cForecast = new Chart(ctx, {
+    type:'line',
+    data:{ labels,
+      datasets:[
+        {
+          label:'Actual / Estimated',
+          data:[1370, 2140, 2000, null, null],
+          borderColor:C.cobalt, backgroundColor:C.skyA,
+          borderWidth:3, pointBackgroundColor:C.cobalt,
+          pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:6,
+          fill:true, tension:0.4
+        },
+        {
+          label:'Forecast',
+          data:[null, null, 2000, 2600, 3100],
+          borderColor:C.violet,
+          borderWidth:2.5, borderDash:[6,4],
+          pointBackgroundColor:C.violet,
+          pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:5,
+          fill:false, tension:0.4, backgroundColor:'transparent'
+        },
+        {
+          label:'Upper Bound',
+          data:[null, null, 2200, 2900, 3500],
+          borderColor:'rgba(124,58,237,0.25)', borderWidth:1, borderDash:[3,4],
+          pointRadius:0, fill:'+1', backgroundColor:'rgba(124,58,237,0.07)', tension:0.4
+        },
+        {
+          label:'Lower Bound',
+          data:[null, null, 1800, 2300, 2700],
+          borderColor:'rgba(124,58,237,0.25)', borderWidth:1, borderDash:[3,4],
+          pointRadius:0, fill:false, tension:0.4
+        }
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ position:'bottom', labels:{ boxWidth:12, font:{size:11}, color:'#475569', padding:10,
+          filter: (item) => item.text !== 'Lower Bound' && item.text !== 'Upper Bound'
+        }},
+        tooltip:{ callbacks:{ label:c=>` ${c.parsed.y ? c.parsed.y.toLocaleString() : '–'} learners` } }
+      },
+      scales:{
+        x:{ grid:{display:false}, ticks:{color:'#64748b',font:{size:11}} },
+        y:{ beginAtZero:false, min:1000, grid:{color:C.border}, ticks:{color:'#64748b',font:{size:11}} }
+      }
+    }
+  });
+}
+
+/* 2. Credential Issuance Forecast */
+function buildCredForecastChart() {
+  const ctx = document.getElementById('credForecastChart').getContext('2d');
+  if (cCredForecast) cCredForecast.destroy();
+  const labels = ['2024','2025','2026 (est)','2027 (proj)','2028 (proj)'];
+  cCredForecast = new Chart(ctx, {
+    type:'bar',
+    data:{ labels,
+      datasets:[
+        {
+          label:'Actual / Estimated',
+          data:[500, 951, 760, null, null],
+          backgroundColor:[C.amber,C.amber,C.amber,'transparent','transparent'],
+          borderRadius:5, borderSkipped:false, order:2
+        },
+        {
+          label:'Forecast',
+          data:[null, null, null, 1100, 1380],
+          backgroundColor:['transparent','transparent','transparent',C.violet,C.violet],
+          borderRadius:5, borderSkipped:false, order:2
+        },
+        {
+          label:'Trend Line',
+          data:[500, 951, 760, 1100, 1380],
+          type:'line',
+          borderColor:C.crimson, borderWidth:2, borderDash:[5,4],
+          pointRadius:4, pointBackgroundColor:C.crimson,
+          fill:false, tension:0.4, order:1
+        }
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, font:{size:11}, color:'#475569', padding:10 } } },
+      scales:{ x:{ grid:{display:false}, ticks:{color:'#64748b'} }, y:{ beginAtZero:true, grid:{color:C.border}, ticks:{color:'#64748b',font:{size:11}} } }
+    }
+  });
+}
+
+/* 3. Completion Rate Trajectory */
+function buildCompletionChart() {
+  const ctx = document.getElementById('completionChart').getContext('2d');
+  if (cCompletion) cCompletion.destroy();
+  const labels = ['2024','2025','2026','2027 (proj)','2028 (proj)','2029 (proj)'];
+  cCompletion = new Chart(ctx, {
+    type:'line',
+    data:{ labels,
+      datasets:[
+        {
+          label:'Actual Completion Rate',
+          data:[63, 68, 71, null, null, null],
+          borderColor:C.emerald, backgroundColor:'rgba(16,185,129,0.1)',
+          borderWidth:3, pointBackgroundColor:C.emerald,
+          pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:6,
+          fill:true, tension:0.4
+        },
+        {
+          label:'Projected Rate',
+          data:[null, null, 71, 74, 77, 80],
+          borderColor:C.violet, borderWidth:2.5, borderDash:[6,4],
+          pointBackgroundColor:C.violet,
+          pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:5,
+          fill:false, tension:0.4
+        },
+        {
+          label:'80% Target',
+          data:[80, 80, 80, 80, 80, 80],
+          borderColor:C.crimson, borderWidth:1.5, borderDash:[4,4],
+          pointRadius:0, fill:false, tension:0
+        }
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, font:{size:11}, color:'#475569', padding:10 } } },
+      scales:{
+        x:{ grid:{display:false}, ticks:{color:'#64748b',font:{size:10}} },
+        y:{ min:55, max:90, grid:{color:C.border}, ticks:{color:'#64748b',font:{size:11}, callback:v=>v+'%'} }
+      }
+    }
+  });
+}
+
+/* 4. Adult vs College Ratio Forecast */
+function buildRatioChart() {
+  const ctx = document.getElementById('ratioChart').getContext('2d');
+  if (cRatio) cRatio.destroy();
+  const labels = ['2024','2025','2026 (est)','2027 (proj)','2028 (proj)'];
+  /* Adult share %: 78, 79, 71(recovery), 71, 70 */
+  const adultShare   = [78, 79, 71, 71, 70];
+  const collegeShare = [22, 21, 29, 29, 30];
+  cRatio = new Chart(ctx, {
+    type:'bar',
+    data:{ labels,
+      datasets:[
+        { label:'Adult Platform %', data:adultShare,   backgroundColor:C.rose,   borderRadius:4, borderSkipped:false },
+        { label:'College Platform %', data:collegeShare, backgroundColor:C.cobalt, borderRadius:4, borderSkipped:false }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, font:{size:11}, color:'#475569', padding:10 } },
+        tooltip:{ callbacks:{ label:c=>` ${c.parsed.y}%` } }
+      },
+      scales:{
+        x:{ stacked:true, grid:{display:false}, ticks:{color:'#64748b',font:{size:11}} },
+        y:{ stacked:true, max:100, grid:{color:C.border}, ticks:{color:'#64748b',font:{size:11}, callback:v=>v+'%'} }
+      }
+    }
+  });
+}
+
+/* ── FILTER DATA ── */
+function filterData(y) {
+  if (y === 'all') return { fy:YEARS, fc:collegeNums, fa:adultNums, ft:totalNums, fba:badgesAdult, fbc:badgesCollege };
+  const i = YEARS.indexOf(y);
+  return { fy:[YEARS[i]], fc:[collegeNums[i]], fa:[adultNums[i]], ft:[totalNums[i]], fba:[badgesAdult[i]], fbc:[badgesCollege[i]] };
+}
+
+/* ── SET YEAR ── */
+function setYear(y) {
+  document.querySelectorAll('.year-btn').forEach(b => b.className = 'year-btn');
+  const map = { all:'active-all','2024':'active-2024','2025':'active-2025','2026':'active-2026' };
+  const lbl = { all:'All','2024':'2024','2025':'2025','2026':'2026' };
+  document.querySelectorAll('.year-btn').forEach(b => {
+    if (b.textContent.trim().startsWith(lbl[y])) b.classList.add(map[y]);
+  });
+
+  const d = KPI[y];
+  const fields = [
+    ['kpi-enrollment','enrollment','eS','eTr'],
+    ['kpi-college','college','cS','cTr'],
+    ['kpi-adult','adult','aS','aTr'],
+    ['kpi-badges','badges','bS','bTr'],
+    ['kpi-partners','partners','pS','pTr'],
+    ['kpi-workshops','workshops','wS','wTr'],
+    ['kpi-fac','fac','fS','fTr'],
+    ['kpi-courses','courses','cOS','cOTr'],
+    ['kpi-rate','rate','rS','rTr'],
+  ];
+  fields.forEach(([id,val,sub,tr]) => {
+    const el  = document.getElementById(id);
+    const elS = document.getElementById(id+'-sub');
+    const elT = document.getElementById(id+'-trend');
+    if (el)  el.textContent  = d[val];
+    if (elS) elS.textContent = d[sub];
+    if (elT) {
+      elT.textContent = d[tr];
+      elT.className = 'kpi-trend ' + (d[tr].startsWith('↑') ? 'up' : d[tr].startsWith('↓') ? 'down' : 'new');
+    }
+  });
+
+  YEARS.forEach(yr => {
+    const show = (y === 'all' || y === yr);
+    ['partners-','block-'].forEach(prefix => {
+      const el = document.getElementById(prefix+yr);
+      if (el) el.style.display = show ? 'block' : 'none';
+    });
+  });
+
+  const mData = y === 'all' ? monthlyAll : y === '2024' ? monthly2024 : y === '2025' ? monthly2025 : monthly2026;
+  buildMonthlyChart(mData);
+
+  const fd = filterData(y);
+  buildEnrollChart(fd.fy, fd.fc, fd.fa);
+  buildTrendChart(fd.fy, fd.ft);
+  buildBadgesChart(fd.fy, fd.fba, fd.fbc);
+}
+
+/* ── INIT ── */
+buildFacilitators();
+buildCourseTable();
+buildCategoryChart();
+buildGenderChart();
+buildDeptChart();
+buildPartnerTypeChart();
+buildForecastChart();
+buildCredForecastChart();
+buildCompletionChart();
+buildRatioChart();
+setYear('all');
+
+}); // end DOMContentLoaded
+</script>
+{% endraw %}
+</body>
+</html>
